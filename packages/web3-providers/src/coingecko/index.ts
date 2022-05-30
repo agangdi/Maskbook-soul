@@ -1,16 +1,17 @@
 import { CurrencyType, Price } from '@masknet/web3-shared-base'
+import { ChainId } from '@masknet/web3-shared-evm'
 import type { PriceAPI } from '..'
 
 const COINGECKO_URL_BASE = 'https://api.coingecko.com/api/v3'
 const COINGECKO_CHAIN_ID_MAPPING: { [key: string]: string } = {
-    1: 'ethereum',
-    56: 'binancecoin',
-    100: 'xdai',
-    137: 'matic-network',
-    250: 'fantom',
-    1030: 'conflux',
-    43114: 'avalanche-2',
-    1313161554: 'aurora-near',
+    [ChainId.Mainnet]: 'ethereum',
+    [ChainId.BSC]: 'binancecoin',
+    [ChainId.xDai]: 'xdai',
+    [ChainId.Matic]: 'matic-network',
+    [ChainId.Fantom]: 'fantom',
+    [ChainId.Conflux]: 'conflux',
+    [ChainId.Avalanche]: 'avalanche-2',
+    [ChainId.Aurora]: 'aurora-near',
 }
 
 /**
@@ -25,7 +26,7 @@ export class CoinGeckoAPI implements PriceAPI.Provider {
      * @param chainId
      * @param nativeToken
      */
-    async getTokenPrice(id: string, currencyType = CurrencyType.USD, chainId?: number, nativeToken?: boolean) {
+    async getTokenPrice(id: string, currencyType = CurrencyType.USD, chainId?: ChainId, nativeToken?: boolean) {
         if (chainId && nativeToken) {
             return this.getNativeTokenPrices(chainId, currencyType)
         }
@@ -42,7 +43,7 @@ export class CoinGeckoAPI implements PriceAPI.Provider {
         return fetch(requestPath).then((r) => r.json() as Promise<Record<string, Price>>)
     }
 
-    async getNativeTokenPrices(chainId: number, currency = CurrencyType.USD) {
+    async getNativeTokenPrices(chainId: ChainId, currency = CurrencyType.USD) {
         const id = COINGECKO_CHAIN_ID_MAPPING[chainId]
         const requestPath = `${COINGECKO_URL_BASE}/simple/price?ids=${id}&vs_currencies=${currency}`
         const price = await fetch(requestPath).then(
