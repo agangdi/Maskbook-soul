@@ -100,7 +100,7 @@ export namespace RSS3BaseAPI {
 
 export namespace PriceAPI {
     export interface Provider {
-        getTokenPrice(address: string, currency: CurrencyType): Promise<number>
+        getTokenPrice(address: string, currency: CurrencyType, chainId?: number, nativeToken?: boolean): Promise<number>
         getTokensPrice(listOfAddress: string[], currency: CurrencyType): Promise<Record<string, number>>
     }
 }
